@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+// ReadSSEPosts reads posts from a Server-Sent Events (SSE) stream and sends them
+// to the postCh channel. The function automatically stops after the specified duration.
 func ReadSSEPosts(postCh chan<- Post, duration time.Duration) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "https://stream.upfluence.co/stream", nil)
@@ -15,7 +17,6 @@ func ReadSSEPosts(postCh chan<- Post, duration time.Duration) {
 		log.Fatal("Error creating request:", err)
 	}
 
-	// Make the request
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal("Error connecting to SSE stream:", err)
@@ -25,6 +26,8 @@ func ReadSSEPosts(postCh chan<- Post, duration time.Duration) {
 	scanner := bufio.NewScanner(resp.Body)
 	timeout := time.After(duration)
 
+	var eventData string
+
 	for {
 		select {
 		case <-timeout:
@@ -33,30 +36,41 @@ func ReadSSEPosts(postCh chan<- Post, duration time.Duration) {
 		default:
 			if scanner.Scan() {
 				line := scanner.Text()
-				if len(line) < 6 || line[:5] != "data:" {
-					continue // skip non-data lines
-				}
-				data := line[5:] // remove "data:" prefix
 
-				// Parse the dynamic event
-				var raw map[string]json.RawMessage
-				if err := json.Unmarshal([]byte(data), &raw); err != nil {
-					log.Println("Error unmarshaling event:", err)
+				// Blank line signals end of an event
+				if line == "" {
+					if eventData != "" {
+						processEvent(eventData, postCh)
+						eventData = ""
+					}
 					continue
 				}
 
-				for _, v := range raw {
-					var post Post
-					if err := json.Unmarshal(v, &post); err != nil {
-						log.Println("Error decoding post:", err)
-						continue
-					}
-					// Send the post to the channel
-					postCh <- post
+				// Only lines starting with "data:" are part of the event
+				if len(line) >= 5 && line[:5] == "data:" {
+					eventData += line[5:]
 				}
 			} else if err := scanner.Err(); err != nil {
 				log.Println("Scanner error:", err)
 			}
 		}
+	}
+}
+
+// processEvent parses the JSON event and sends Post structs to the channel
+func processEvent(eventData string, postCh chan<- Post) {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal([]byte(eventData), &raw); err != nil {
+		log.Println("Error unmarshaling event:", err)
+		return
+	}
+
+	for _, v := range raw {
+		var post Post
+		if err := json.Unmarshal(v, &post); err != nil {
+			log.Println("Error decoding post:", err)
+			continue
+		}
+		postCh <- post
 	}
 }
