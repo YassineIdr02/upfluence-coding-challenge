@@ -4,17 +4,17 @@ import "encoding/json"
 
 type Post struct {
 	Timestamp int64 `json:"timestamp"`
-	Likes     int `json:"likes,omitempty"`
-	Comments  int `json:"comments,omitempty"`
-	Favorites int `json:"favorites,omitempty"`
-	Retweets  int `json:"retweets,omitempty"`
+	Likes     int   `json:"likes,omitempty"`
+	Comments  int   `json:"comments,omitempty"`
+	Favorites int   `json:"favorites,omitempty"`
+	Retweets  int   `json:"retweets,omitempty"`
 }
 
 type AnalysisResult struct {
-	TotalPosts       int                    `json:"total_posts"`
-	MinimumTimestamp int64                  `json:"minimum_timestamp"`
-	MaximumTimestamp int64                  `json:"maximum_timestamp"`
-	Average          map[string]interface{} `json:"-"`
+	TotalPosts       int                `json:"total_posts"`
+	MinimumTimestamp int64              `json:"minimum_timestamp"`
+	MaximumTimestamp int64              `json:"maximum_timestamp"`
+	Average          map[string]float64 `json:"-"`
 }
 
 func (ar AnalysisResult) MarshalJSON() ([]byte, error) {
@@ -36,4 +36,4 @@ func (ar AnalysisResult) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(baseMap)
-}	
+}
