@@ -1,3 +1,3 @@
-module upfluence-coding-challenge
+module upfluence-coding-challenge/server
 
-go 1.23.3
+go 1.23.6

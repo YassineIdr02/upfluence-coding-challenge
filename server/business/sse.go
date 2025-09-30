@@ -1,4 +1,4 @@
-package main
+package business
 
 import (
 	"bufio"
@@ -7,12 +7,15 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"upfluence-coding-challenge/server/constants"
+	"upfluence-coding-challenge/server/models"
 )
 
 // ReadSSEPosts fetches posts from the SSE stream sequentially for a given duration.
-func ReadSSEPosts(duration time.Duration) ([]Post, error) {
+func ReadSSEPosts(duration time.Duration) ([]models.Post, error) {
 	client := &http.Client{Timeout: duration + 5*time.Second}
-	req, err := http.NewRequest("GET", RouteStream, nil)
+	req, err := http.NewRequest("GET", constants.RouteStream, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +29,7 @@ func ReadSSEPosts(duration time.Duration) ([]Post, error) {
 
 	scanner := bufio.NewScanner(resp.Body)
 	start := time.Now()
-	var posts []Post
+	var posts []models.Post
 	var eventData strings.Builder
 
 	for scanner.Scan() {
@@ -36,7 +39,7 @@ func ReadSSEPosts(duration time.Duration) ([]Post, error) {
 				var raw map[string]json.RawMessage
 				if err := json.Unmarshal([]byte(eventData.String()), &raw); err == nil {
 					for _, v := range raw {
-						var post Post
+						var post models.Post
 						if err := json.Unmarshal(v, &post); err != nil {
 							log.Println("Error unmarshaling post:", err)
 							continue

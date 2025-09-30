@@ -1,20 +1,24 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"upfluence-coding-challenge/server/constants"
+	"upfluence-coding-challenge/server/business"
+	"upfluence-coding-challenge/server/helpers"
 )
 
 // fetchPostsFromSSE is injectable for testing. By default, it calls ReadSSEPosts.
-var fetchPostsFromSSE = ReadSSEPosts
+var FetchPostsFromSSE = business.ReadSSEPosts
 
-func analysisHandler(w http.ResponseWriter, r *http.Request) {
+func AnalysisHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	if r.Method != http.MethodGet || r.URL.Path != RouteAnalysis {
+	if r.Method != http.MethodGet || r.URL.Path != constants.RouteAnalysis {
 		http.NotFound(w, r)
 		return
 	}
@@ -26,18 +30,18 @@ func analysisHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dimension := r.URL.Query().Get("dimension")
-	if dimension != Likes && dimension != Comments && dimension != Favorites && dimension != Retweets {
+	if dimension != constants.Likes && dimension != constants.Comments && dimension != constants.Favorites && dimension != constants.Retweets {
 		http.Error(w, "Invalid dimension", http.StatusBadRequest)
 		return
 	}
 
-	posts, err := fetchPostsFromSSE(duration)
+	posts, err := FetchPostsFromSSE(duration)
 	if err != nil {
 		http.Error(w, "Failed to read posts", http.StatusInternalServerError)
 		return
 	}
 
-	result := aggregatePosts(posts, dimension)
+	result := helpers.AggregatePosts(posts, dimension)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)

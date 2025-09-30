@@ -1,14 +1,17 @@
-package main
+package helpers
 
 import (
 	"fmt"
 	"math"
+
+	"upfluence-coding-challenge/server/constants"
+	"upfluence-coding-challenge/server/models"
 )
 
-func aggregatePosts(posts []Post, dimension string) AnalysisResult {
+func AggregatePosts(posts []models.Post, dimension string) models.AnalysisResult {
 	total := len(posts)
 	if total == 0 {
-		return AnalysisResult{}
+		return models.AnalysisResult{}
 	}
 
 	minTS := posts[0].Timestamp
@@ -24,13 +27,13 @@ func aggregatePosts(posts []Post, dimension string) AnalysisResult {
 		}
 
 		switch dimension {
-		case Likes:
+		case constants.Likes:
 			sum += post.Likes
-		case Comments:
+		case constants.Comments:
 			sum += post.Comments
-		case Favorites:
+		case constants.Favorites:
 			sum += post.Favorites
-		case Retweets:
+		case constants.Retweets:
 			sum += post.Retweets
 		}
 	}
@@ -38,8 +41,7 @@ func aggregatePosts(posts []Post, dimension string) AnalysisResult {
 	avg := float64(sum) / float64(total)
 	avg = math.Round(avg)
 
-
-	return AnalysisResult{
+	return models.AnalysisResult{
 		TotalPosts:       total,
 		MinimumTimestamp: minTS,
 		MaximumTimestamp: maxTS,
