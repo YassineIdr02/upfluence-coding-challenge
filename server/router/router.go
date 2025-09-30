@@ -6,6 +6,8 @@ import (
 	"upfluence-coding-challenge/server/handlers"
 )
 
-func RegisterRoutes() {
-	http.HandleFunc("/analysis", handlers.AnalysisHandler)
+func NewRouter() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/analysis", handlers.AnalysisHandler)
+	return mux
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import type { AnalysisResult } from "../types/Analysisresult";
-import { motion, AnimatePresence } from "motion/react"
+import type { AnalysisResult } from "../types/AnalysisResult";
+import { motion, AnimatePresence } from "motion/react";
 
 const dimensions = ["likes", "comments", "favorites", "retweets"];
 const units = ["s", "m", "h"];
@@ -14,6 +14,7 @@ export default function AnalysisForm() {
   const [dimension, setDimension] = useState(dimensions[0]);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [canClick, setCanClick] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchAnalysis = async () => {
@@ -36,9 +37,19 @@ export default function AnalysisForm() {
     }
   };
 
+  useEffect(() => {
+    if (durationNumber < 1) {
+      setCanClick(false);
+    } else {
+      setCanClick(true);
+    }
+  }, [durationNumber]);
+
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
-      <h2 className="text-3xl font-bold mb-4 mt-4">Upfluence Coding Challenge - SSE Analysis</h2>
+      <h2 className="text-3xl font-bold mb-4 mt-4">
+        Upfluence Coding Challenge - SSE Analysis
+      </h2>
       <div className="flex flex-row w-full items-center justify-center gap-2 mb-4 font-mono font-semibold">
         /analysis?duration=
         <input
@@ -72,18 +83,20 @@ export default function AnalysisForm() {
             </option>
           ))}
         </select>
-
-        <button
-          onClick={fetchAnalysis}
-          className="btn btn-neutral"
-        >
+        <button onClick={fetchAnalysis} className="btn btn-neutral cursor-pointer" disabled={!canClick}>
           Analyze
         </button>
       </div>
 
-      {loading && <> <div className="flex flex-col items-center justify-center gap-2 text-center"><p>Please wait while we analyze the data...</p><span className="loading loading-spinner loading-md"></span></div>
-      </>
-      }
+      {loading && (
+        <>
+          {" "}
+          <div className="flex flex-col items-center justify-center gap-2 text-center">
+            <p>Please wait while we analyze the data...</p>
+            <span className="loading loading-spinner loading-md"></span>
+          </div>
+        </>
+      )}
       {error && <p className="text-red-500">{error}</p>}
       <div className="relative w-full flex items-start justify-center h-64">
         <AnimatePresence>
@@ -100,7 +113,10 @@ export default function AnalysisForm() {
                 <p>Total Posts: {result.total_posts}</p>
                 <p>Min Timestamp: {result.minimum_timestamp}</p>
                 <p>Max Timestamp: {result.maximum_timestamp}</p>
-                <p>Average {dimension}: {result[`avg_${dimension}` as keyof AnalysisResult]}</p>
+                <p>
+                  Average {dimension}:{" "}
+                  {result[`avg_${dimension}` as keyof AnalysisResult]}
+                </p>
               </div>
             </motion.div>
           )}

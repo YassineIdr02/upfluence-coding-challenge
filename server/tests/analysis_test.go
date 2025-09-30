@@ -26,7 +26,7 @@ func TestAnalysisHandler_Comments(t *testing.T) {
 	}
 	defer func() { handlers.FetchPostsFromSSE = originalFetch }()
 
-	req := httptest.NewRequest(http.MethodGet, constants.RouteAnalysis+"?duration=1s&dimension=comments", nil)
+	req := httptest.NewRequest(http.MethodGet, "/analysis?duration=1s&dimension=comments", nil)
 	w := httptest.NewRecorder()
 
 	handlers.AnalysisHandler(w, req)

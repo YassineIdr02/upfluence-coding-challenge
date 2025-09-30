@@ -2,7 +2,6 @@ package constants
 
 const (
 	// Routes
-	RouteAnalysis = "/analysis"
 	RouteStream   = "https://stream.upfluence.co/stream"
 
 	// Fields
