@@ -26,7 +26,7 @@ func analysisHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dimension := r.URL.Query().Get("dimension")
-	if dimension != "likes" && dimension != "comments" && dimension != "favorites" && dimension != "retweets" {
+	if dimension != Likes && dimension != Comments && dimension != Favorites && dimension != Retweets {
 		http.Error(w, "Invalid dimension", http.StatusBadRequest)
 		return
 	}
