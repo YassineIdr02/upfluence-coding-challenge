@@ -1,10 +1,5 @@
 # Upfluence Coding Challenge – SSE Aggregator API
 
-[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org/)
-[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat&logo=react)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.0+-646CFF?style=flat&logo=vite)](https://vitejs.dev/)
-
 ## Overview
 
 This project implements a simple HTTP API server that aggregates social media posts from Upfluence's SSE (Server-Sent Events) stream. The API computes summary statistics over a user-defined time window and dimension (likes, comments, favorites, retweets).
