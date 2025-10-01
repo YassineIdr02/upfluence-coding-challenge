@@ -1,6 +1,5 @@
 package business
 
-
 import (
 	"fmt"
 	"math"
@@ -9,6 +8,8 @@ import (
 	"upfluence-coding-challenge/server/models"
 )
 
+// AggregatePosts calculates aggregated statistics for a list of posts for a given dimension.
+// It returns the total number of posts, min/max timestamps, and the average of the specified dimension.
 func AggregatePosts(posts []models.Post, dimension string) models.AnalysisResult {
 	total := len(posts)
 	if total == 0 {

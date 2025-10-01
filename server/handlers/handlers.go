@@ -13,6 +13,9 @@ import (
 // fetchPostsFromSSE is injectable for testing. By default, it calls ReadSSEPosts.
 var FetchPostsFromSSE = business.ReadSSEPosts
 
+// AnalysisHandler handles GET /analysis requests to analyze social media posts from SSE stream.
+// It validates query parameters (duration and dimension), fetches posts from SSE, aggregates them,
+// and returns the analysis results as JSON.
 func AnalysisHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
