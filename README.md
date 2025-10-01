@@ -197,21 +197,6 @@ The backend allows requests from `http://localhost:5173` during development. If 
 - **Missing Metrics**: Posts without specific metrics default to 0
 - **Graceful Degradation**: System handles missing or malformed data gracefully
 
-## Scalability Considerations
-
-### Current Approach
-
-- Server consumes SSE for requested duration and aggregates in memory
-- Suitable for short durations and low concurrency
-
-### Production Improvements
-
-- **Background Aggregator**: Continuously consume SSE and write to time-series store
-- **Streaming Aggregation**: Use rolling windows to avoid storing all raw posts
-- **Rate Limiting**: Implement circuit breakers for SSE upstream and API
-- **Load Balancing**: Deploy multiple instances with shared caches (Redis)
-- **Caching**: Precomputed aggregates for frequently requested time windows
-
 ## Trade-offs & Assumptions
 
 - **SSE Parsing**: Line-by-line parsing with multi-line event concatenation
@@ -221,17 +206,9 @@ The backend allows requests from `http://localhost:5173` during development. If 
 
 ## Future Improvements
 
-- [ ] **Performance**: Add caching and precomputed aggregates
-- [ ] **Persistence**: Store raw posts for historical analytics
-- [ ] **Reliability**: Robust SSE client with reconnections and backoff
+- [ ] **Reliability**: Make the SSE client more robust, e.g., automatically reconnect if the stream fails.
 - [ ] **Deployment**: Docker containers and docker-compose setup
-- [ ] **UI Enhancement**: Charts and human-friendly timestamps
-- [ ] **Monitoring**: Metrics and health check endpoints
 - [ ] **Documentation**: OpenAPI/Swagger specification
-
-## License
-
-This project is part of the Upfluence coding challenge.
 
 ---
 

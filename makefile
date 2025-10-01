@@ -10,6 +10,10 @@ install:
 	@echo "Installing client dependencies..."
 	cd $(CLIENT_DIR) && npm install
 
+test:
+	@echo "Running tests..."
+	cd $(SERVER_DIR) && go test ./...
+
 server:
 	cd $(SERVER_DIR) && go run .
 
