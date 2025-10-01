@@ -12,7 +12,6 @@ The server is written in Go with a minimal React + Vite + TypeScript frontend fo
 
 ```mermaid
 graph LR
-graph LR
     A["Client Request /analysis"] --> B["Handler: Validate Request"]
     B --> C["Business Layer: Fetch & Aggregate SSE Stream"]
     C --> B
