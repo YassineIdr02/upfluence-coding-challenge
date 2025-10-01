@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
-	"upfluence-coding-challenge/server/constants"
 	"upfluence-coding-challenge/server/business"
+	"upfluence-coding-challenge/server/constants"
 	"upfluence-coding-challenge/server/helpers"
 )
 
@@ -19,30 +19,32 @@ func AnalysisHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	if r.Method != http.MethodGet || r.URL.Path != "/analysis" {
-		http.NotFound(w, r)
+		helpers.WriteJSONError(w, http.StatusNotFound, "not_found", "Not Found")
 		return
 	}
 
 	duration, err := time.ParseDuration(r.URL.Query().Get("duration"))
 	if err != nil {
-		http.Error(w, "Invalid duration", http.StatusBadRequest)
+		helpers.WriteJSONError(w, http.StatusBadRequest, "invalid_duration", "Invalid duration")
 		return
 	}
 
 	dimension := r.URL.Query().Get("dimension")
 	if dimension != constants.Likes && dimension != constants.Comments && dimension != constants.Favorites && dimension != constants.Retweets {
-		http.Error(w, "Invalid dimension", http.StatusBadRequest)
+		helpers.WriteJSONError(w, http.StatusBadRequest, "invalid_dimension", "Invalid dimension")
 		return
 	}
+
+	log.Printf("[INFO] /analysis called with duration=%s dimension=%s", duration, dimension)
 
 	posts, err := FetchPostsFromSSE(duration)
 	if err != nil {
-		http.Error(w, "Failed to read posts", http.StatusInternalServerError)
+		helpers.WriteJSONError(w, http.StatusInternalServerError, "failed_to_read_posts", "Failed to read posts")
 		return
 	}
 
-	result := helpers.AggregatePosts(posts, dimension)
+	result := business.AggregatePosts(posts, dimension)
+	log.Printf("[INFO] Aggregated %d posts for dimension=%s", len(posts), dimension)
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	helpers.WriteJSON(w, http.StatusOK, result)
 }

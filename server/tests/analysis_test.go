@@ -37,7 +37,7 @@ func TestAnalysisHandler_Comments(t *testing.T) {
 	var result map[string]interface{}
 	_ = json.NewDecoder(res.Body).Decode(&result)
 
-	if result["avg"+constants.Comments].(float64) != 10 {
+	if result["avg_"+constants.Comments].(float64) != 10 {
 		t.Errorf("expected avg_comments 10, got %v", result["avg_"+constants.Comments])
 	}
 }
