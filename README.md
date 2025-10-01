@@ -12,9 +12,9 @@ The server is written in Go with a minimal React + Vite + TypeScript frontend fo
 
 ```mermaid
 graph LR
-    A[Client Request /analysis] --> B[Server Validation (Handler)]
+    A[Client Request /analysis] --> B["Server Validation (Handler)"]
     B --> C[Business Layer]
-    C --> D[SSE Stream (Upfluence)]
+    C --> D["SSE Stream (Upfluence)"]
     D --> C
     C --> E[Aggregation Result]
     E --> F[JSON Response to Client]
