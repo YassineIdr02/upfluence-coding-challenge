@@ -17,7 +17,8 @@ graph LR
     C --> D["SSE Stream (Upfluence)"]
     D --> C
     C --> E[Aggregation Result]
-    E --> F[JSON Response to Client]
+    E --> F[Handler]
+    F --> J[JSON Response to Client]
 ```
 
 ### Architecture Overview
