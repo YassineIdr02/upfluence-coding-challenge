@@ -12,13 +12,11 @@ The server is written in Go with a minimal React + Vite + TypeScript frontend fo
 
 ```mermaid
 graph LR
-    A[Client Request /analysis] --> B["Server Validation (Handler)"]
-    B --> C[Business Layer]
-    C --> D["SSE Stream (Upfluence)"]
-    D --> C
-    C --> E[Aggregation Result]
-    E --> F[Handler]
-    F --> J[JSON Response to Client]
+graph LR
+    A["Client Request /analysis"] --> B["Handler: Validate Request"]
+    B --> C["Business Layer: Fetch & Aggregate SSE Stream"]
+    C --> B
+    B --> D[JSON Response to Client]
 ```
 
 ### Architecture Overview
@@ -206,10 +204,10 @@ The backend allows requests from `http://localhost:5173` during development. If 
 
 ## Future Improvements
 
+- [ ] **Performance**: Streamline aggregation by updating totals, min/max, and sums on-the-fly as posts arrive, avoiding storing the entire post list in memory.
 - [ ] **Reliability**: Make the SSE client more robust, e.g., automatically reconnect if the stream fails.
-- [ ] **Deployment**: Docker containers and docker-compose setup
-- [ ] **Documentation**: OpenAPI/Swagger specification
-
+- [ ] **Deployment**: Docker containers and docker-compose setup.
+- [ ] **Documentation**: OpenAPI/Swagger specification.
 ---
 
-**Built with Go, React, and TypeScript**
+**Built with ❤️ Go, React, and TypeScript**
