@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from "motion/react";
 
 const dimensions = ["likes", "comments", "favorites", "retweets"];
 const units = ["s", "m", "h"];
+const API_URL = import.meta.env.VITE_API_URL;
+console.log(API_URL);
+
 
 export default function AnalysisForm() {
   useEffect(() => {
@@ -24,7 +27,7 @@ export default function AnalysisForm() {
     const duration = `${durationNumber}${durationUnit}`;
     try {
       const res = await fetch(
-        `http://localhost:8080/analysis?duration=${duration}&dimension=${dimension}`
+        `${API_URL}/analysis?duration=${duration}&dimension=${dimension}`
       );
       if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
       const data: AnalysisResult = await res.json();
